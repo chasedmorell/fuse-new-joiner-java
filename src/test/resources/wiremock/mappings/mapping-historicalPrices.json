@@ -7,7 +7,9 @@
   },
   "response" : {
     "status" : 200,
-    "jsonBody" : [{"symbol":"IBM","price":186.3011,"size":100,"time":1565273330617}],
+    "jsonBody" : [{"symbol":"IBM","close":123.65,"high":124.1,"low":122.805,"open":123.11,"volume":4971936,"date":1683244800000},
+      {"symbol":"IBM","close":123.4,"high":123.92,"low":122.55,"open":123.76,"volume":3663818,"date":1683504000000},
+      {"symbol":"IBM","close":121.17,"high":121.97,"low":120.66,"open":121.9,"volume":4540047,"date":1683590400000}],
     "headers" : {
       "Server" : "nginx",
       "Date" : "Thu, 08 Aug 2019 14:08:53 GMT",
@@ -30,3 +32,4 @@
   "persistent" : true,
   "insertionIndex" : 5
 }
+

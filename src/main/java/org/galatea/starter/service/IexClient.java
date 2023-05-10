@@ -42,11 +42,11 @@ public interface IexClient {
    * See https://iexcloud.io/docs/api/#historical-prices
    *
    * @param symbol stock symbol to get historical prices for.
-   * @param range the length of time to retrieve data for. For example, '5d' is the last 5 days of data.
+   * @param range the length of time to retrieve data for. For example, '5d' is the last 5 days of data. (Optional: defaults to 1 month)
    * @param token Iex access token
    * @return a list of IexHistoricalPrices
    */
   @GetMapping("/stock/{symbol}/chart/{range}/")
-  List<IexHistoricalPrices> getHistoricalPricesForSymbol(@PathVariable("symbol") String symbol, @PathVariable("range") String range, @RequestParam("token") String token);
+  List<IexHistoricalPrices> getHistoricalPricesForSymbol(@PathVariable("symbol") String symbol, @PathVariable(value = "range", required = false) String range, @RequestParam("token") String token);
 
 }
