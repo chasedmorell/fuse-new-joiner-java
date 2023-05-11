@@ -23,9 +23,6 @@ public class IexService {
   @NonNull
   private IexClient iexClient;
 
-  @Value("${spring.rest.token}")
-  private String token;
-
 
   /**
    * Get all stock symbols from IEX.
@@ -33,7 +30,7 @@ public class IexService {
    * @return a list of all Stock Symbols from IEX.
    */
   public List<IexSymbol> getAllSymbols() {
-    return iexClient.getAllSymbols(token);
+    return iexClient.getAllSymbols();
   }
 
   /**
@@ -46,7 +43,7 @@ public class IexService {
     if (CollectionUtils.isEmpty(symbols)) {
       return Collections.emptyList();
     } else {
-      return iexClient.getLastTradedPriceForSymbols(symbols.toArray(new String[0]), token);
+      return iexClient.getLastTradedPriceForSymbols(symbols.toArray(new String[0]));
     }
   }
 
@@ -58,7 +55,7 @@ public class IexService {
    * @return a list of IexHistoricalPrices objects
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(final String symbol, final String range) {
-      return iexClient.getHistoricalPricesForSymbol(symbol, range, token);
+      return iexClient.getHistoricalPricesForSymbol(symbol, range);
   }
 
 

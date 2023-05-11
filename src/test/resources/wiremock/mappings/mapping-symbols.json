@@ -2,7 +2,7 @@
   "id": "4dc720df-b9cd-465e-a27e-68ccdb49ef31",
   "name": "ref-data_symbols",
   "request": {
-    "url": "/ref-data/symbols?token=test_token",
+    "url": "/ref-data/symbols?token=sk_dfd9300709ca4a74a51e40fd9f0a1cde",
     "method": "GET"
   },
   "response": {
