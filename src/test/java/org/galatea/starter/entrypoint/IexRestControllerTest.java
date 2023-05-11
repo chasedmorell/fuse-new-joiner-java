@@ -108,4 +108,17 @@ public class IexRestControllerTest extends ASpringTest {
             .andReturn();
   }
 
+
+  @Test
+  public void testGetHistoricalPricesRequiresSymbol() throws Exception {
+
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalPrices")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().is(400))
+            .andReturn();
+  }
+
+
 }
