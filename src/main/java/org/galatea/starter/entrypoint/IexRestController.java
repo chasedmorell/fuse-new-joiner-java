@@ -53,7 +53,7 @@ public class IexRestController {
    * Get historical prices for a symbol with specified time-frame range
    *
    * @param symbol stock symbol to get historical prices for.
-   * @param range the range of the historical data. (examples: 1m, 5d)
+   * @param range the range of the historical data, starting at today. (examples: 1m, 5d)
    * @return a List of IexHistoricalPrices objects for the given symbol and range.
    */
   @GetMapping(value = "${mvc.iex.getHistoricalPricesPath}", produces = {
