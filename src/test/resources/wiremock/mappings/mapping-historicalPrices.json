@@ -2,7 +2,7 @@
   "id" : "16369e06-78d4-40a7-98d1-3dbe0ba82fc9",
   "name" : "historical_prices",
   "request" : {
-    "url" : "/stock/IBM/chart/5d/?token=sk_dfd9300709ca4a74a51e40fd9f0a1cde",
+    "url" : "/stock/IBM/chart/5d/?token=test_token",
     "method" : "GET"
   },
   "response" : {

@@ -2,6 +2,7 @@ package org.galatea.starter.service;
 
 import java.util.List;
 
+import org.galatea.starter.IexClientConfig;
 import org.galatea.starter.domain.IexHistoricalPrices;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * A Feign Declarative REST Client to access endpoints from the Free and Open IEX API to get market
  * data. See https://iextrading.com/developer/docs/
  */
-@FeignClient(name = "IEX", url = "${spring.rest.iexBasePath}")
+@FeignClient(name = "IEX", url = "${spring.rest.iexBasePath}", configuration = IexClientConfig.class)
 public interface IexClient {
 
   @Value("${spring.rest.iexToken}")
@@ -24,28 +25,20 @@ public interface IexClient {
   /**
    * Get a list of all stocks supported by IEX. See https://iextrading.com/developer/docs/#symbols.
    * As of July 2019 this returns almost 9,000 symbols, so maybe don't call it in a loop.
-   * @param token Iex access token
    * @return a list of all of the stock symbols supported by IEX.
    */
   @GetMapping("/ref-data/symbols")
-  List<IexSymbol> getAllSymbols(@RequestParam(value = "token") String token);
+  List<IexSymbol> getAllSymbols();
 
-  default  List<IexSymbol> getAllSymbols(){
-    return this.getAllSymbols(token);
-  }
   /**
    * Get the last traded price for each stock symbol passed in. See https://iextrading.com/developer/docs/#last.
    *
    * @param symbols stock symbols to get last traded price for.
-   * @param token Iex access token
    * @return a list of the last traded price for each of the symbols passed in.
    */
   @GetMapping("/tops/last")
-  List<IexLastTradedPrice> getLastTradedPriceForSymbols(@RequestParam("symbols") String[] symbols, @RequestParam("token") String token);
+  List<IexLastTradedPrice> getLastTradedPriceForSymbols(@RequestParam("symbols") String[] symbols);
 
-  default List<IexLastTradedPrice> getLastTradedPriceForSymbols(String[] symbols){
-    return this.getLastTradedPriceForSymbols(symbols, token);
-  }
 
   /**
    * Returns historical data for up to 15 years,
@@ -54,13 +47,9 @@ public interface IexClient {
    *
    * @param symbol stock symbol to get historical prices for.
    * @param range the length of time to retrieve data for. For example, '5d' is the last 5 days of data. (Optional: defaults to 1 month)
-   * @param token Iex access token
    * @return a list of IexHistoricalPrices
    */
   @GetMapping("/stock/{symbol}/chart/{range}/")
-  List<IexHistoricalPrices> getHistoricalPricesForSymbol(@PathVariable("symbol") String symbol, @PathVariable(value = "range", required = false) String range, @RequestParam("token") String token);
+  List<IexHistoricalPrices> getHistoricalPricesForSymbol(@PathVariable("symbol") String symbol, @PathVariable(value = "range", required = false) String range);
 
-  default List<IexHistoricalPrices> getHistoricalPricesForSymbol(String symbol, String range){
-    return this.getHistoricalPricesForSymbol(symbol, range, token);
-  }
 }
