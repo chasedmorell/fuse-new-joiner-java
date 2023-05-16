@@ -4,6 +4,17 @@ import static org.springframework.util.ReflectionUtils.doWithMethods;
 import static org.springframework.util.ReflectionUtils.invokeMethod;
 
 import java.lang.reflect.Modifier;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.builder.DiffBuilder;
@@ -40,5 +51,29 @@ public class Helpers {
         invokeMethod(method, lhs), invokeMethod(method, rhs)), filter);
 
     return builder.build();
+  }
+
+  public static List<Date> getBusinessDaysSinceDate(final LocalDate startDate) {
+
+    final LocalDate endDate = LocalDate.now();
+
+    // Predicate 2: Is a given date is a weekday
+    Predicate<LocalDate> isWeekend = date -> date.getDayOfWeek() == DayOfWeek.SATURDAY
+            || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+
+    // Iterate over stream of all dates and check each day against any weekday or holiday
+    List<LocalDate> businessDays = startDate.datesUntil(endDate)
+            .filter(isWeekend.negate())
+            .collect(Collectors.toList());
+
+    List<Date> businessDaysDate = new ArrayList<Date>();
+
+    for (int i = 0; i < businessDays.size(); i++) {
+      Date date = Date.from(businessDays.get(i).atStartOfDay(ZoneId.of("Etc/UTC")).toInstant());
+      System.out.println(businessDays.get(i));
+      businessDaysDate.add(date);
+    }
+
+    return businessDaysDate;
   }
 }

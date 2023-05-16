@@ -1,13 +1,18 @@
 package org.galatea.starter.service;
 
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.domain.IexHistoricalPrices;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.galatea.starter.domain.rpsy.IexHistoricalPricesKey;
+import org.galatea.starter.domain.rpsy.IexHistoricalPricesRpsy;
+import org.galatea.starter.utils.Helpers;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,6 +28,8 @@ public class IexService {
   @NonNull
   private IexClient iexClient;
 
+  @Autowired
+  private IexHistoricalPricesRpsy iexHistoricalPricesRpsy;
 
   /**
    * Get all stock symbols from IEX.
@@ -54,8 +61,29 @@ public class IexService {
    * @param range the range of the historical data.
    * @return a list of IexHistoricalPrices objects
    */
-  public List<IexHistoricalPrices> getHistoricalPricesForSymbol(final String symbol, final String range) {
-      return iexClient.getHistoricalPricesForSymbol(symbol, range);
+  public List<IexHistoricalPrices> getHistoricalPricesForSymbol(final String symbol, final Integer range) {
+
+      //determine the days of historicalPrice data needed based on range query
+      LocalDate sinceDate = LocalDate.now().minusDays(range);
+      List<Date> businessDaysSinceDate = Helpers.getBusinessDaysSinceDate(sinceDate);
+
+      //create a list of primary keys, which will be used in cache query.
+      List<IexHistoricalPricesKey> keys = new ArrayList<>();
+      for(Date date : businessDaysSinceDate){
+          keys.add(new IexHistoricalPricesKey(symbol, date));
+      }
+
+      //find all the historicalPrice records, if they exist in cache database.
+      List<IexHistoricalPrices> cachedHistoricalPrices = iexHistoricalPricesRpsy.findAllById(keys);
+
+      //if the cache query returns fewer documents than required, we'll need to query the API instead.
+      if(cachedHistoricalPrices.size() < businessDaysSinceDate.size()){
+          List<IexHistoricalPrices> historicalPrices = iexClient.getHistoricalPricesForSymbol(symbol, range.toString().concat("d"));
+          iexHistoricalPricesRpsy.saveAll(historicalPrices);
+          return historicalPrices;
+      }else{
+          return cachedHistoricalPrices;
+      }
   }
 
 
