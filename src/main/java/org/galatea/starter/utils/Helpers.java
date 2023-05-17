@@ -53,9 +53,7 @@ public class Helpers {
     return builder.build();
   }
 
-  public static List<Date> getBusinessDaysSinceDate(final LocalDate startDate) {
-
-    final LocalDate endDate = LocalDate.now();
+  public static List<Date> getBusinessDaysSinceDate(final LocalDate endDate, final LocalDate startDate) {
 
     // Predicate 2: Is a given date is a weekday
     Predicate<LocalDate> isWeekend = date -> date.getDayOfWeek() == DayOfWeek.SATURDAY

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE) // For spring and jackson
+@NoArgsConstructor(access = AccessLevel.PUBLIC) // For spring and jackson
 @Data
 @Builder
 @Entity

@@ -28,6 +28,7 @@ public class IexService {
   @NonNull
   private IexClient iexClient;
 
+  @NonNull
   @Autowired
   private IexHistoricalPricesRpsy iexHistoricalPricesRpsy;
 
@@ -65,7 +66,7 @@ public class IexService {
 
       //determine the days of historicalPrice data needed based on range query
       LocalDate sinceDate = LocalDate.now().minusDays(range);
-      List<Date> businessDaysSinceDate = Helpers.getBusinessDaysSinceDate(sinceDate);
+      List<Date> businessDaysSinceDate = Helpers.getBusinessDaysSinceDate(LocalDate.now(), sinceDate);
 
       //create a list of primary keys, which will be used in cache query.
       List<IexHistoricalPricesKey> keys = new ArrayList<>();
@@ -81,9 +82,10 @@ public class IexService {
           List<IexHistoricalPrices> historicalPrices = iexClient.getHistoricalPricesForSymbol(symbol, range.toString().concat("d"));
           iexHistoricalPricesRpsy.saveAll(historicalPrices);
           return historicalPrices;
-      }else{
-          return cachedHistoricalPrices;
       }
+
+      return cachedHistoricalPrices;
+
   }
 
 

@@ -10,8 +10,10 @@ import junitparams.JUnitParamsRunner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.ASpringTest;
+import org.galatea.starter.domain.rpsy.IexHistoricalPricesRpsy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -87,7 +89,7 @@ public class IexRestControllerTest extends ASpringTest {
 
     MvcResult result = this.mvc.perform(
                     org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                            .get("/iex/historicalPrices?symbol=IBM&range=3d")
+                            .get("/iex/historicalPrices?symbol=IBM&range=3")
                             .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].symbol", is("IBM")))
@@ -102,7 +104,7 @@ public class IexRestControllerTest extends ASpringTest {
 
     MvcResult result = this.mvc.perform(
                     org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                            .get("/iex/historicalPrices?symbol=IBM&range=5d")
+                            .get("/iex/historicalPrices?symbol=IBM&range=5")
                             .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             //should return between 2 and 5 days (inclusive) of historical price data depending.
