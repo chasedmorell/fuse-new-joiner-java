@@ -73,7 +73,7 @@ public class IexService {
           keys.add(new IexHistoricalPricesKey(symbol, date));
       }
 
-      //find all the historicalPrice records, if they exist in cache database.
+      //find all the historicalPrice records, if they exist, in cache database.
       List<IexHistoricalPrices> cachedHistoricalPrices = iexHistoricalPricesRpsy.findAllById(keys);
 
       //if the cache query returns fewer documents than required, we'll need to query the API instead.
