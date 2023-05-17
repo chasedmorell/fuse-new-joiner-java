@@ -37,7 +37,9 @@ public class IexServiceTest extends ASpringTest {
     @Test
     public void testGetHistoricalPricesForSymbol(){
 
+        Mockito.verify(mockIexClient, times(0)).getHistoricalPricesForSymbol("IBM","2d");
         service.getHistoricalPricesForSymbol("IBM", 2);
+        Mockito.verify(mockIexClient, times(1)).getHistoricalPricesForSymbol("IBM","2d");
 
         List<IexHistoricalPrices> prices = new ArrayList<>();
         prices.add(new IexHistoricalPrices());
