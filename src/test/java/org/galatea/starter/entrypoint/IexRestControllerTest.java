@@ -1,6 +1,6 @@
 package org.galatea.starter.entrypoint;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,4 +81,61 @@ public class IexRestControllerTest extends ASpringTest {
         .andExpect(jsonPath("$", is(Collections.emptyList())))
         .andReturn();
   }
+
+  @Test
+  public void testGetHistoricalPrices() throws Exception {
+
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalPrices?symbol=IBM&range=3d")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].symbol", is("IBM")))
+            .andExpect(jsonPath("$[1].symbol", is("IBM")))
+            .andExpect(jsonPath("$[2].symbol", is("IBM")))
+            .andReturn();
+  }
+
+
+  @Test
+  public void testGetHistoricalPrices5Days() throws Exception {
+
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalPrices?symbol=IBM&range=5d")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            //should return between 2 and 5 days (inclusive) of historical price data depending.
+            //will return less than 5 days of data if
+            //market is closed on one or more of the last 5 days, such as on weekends and holidays.
+            .andExpect(jsonPath("$", hasSize(lessThanOrEqualTo(5))))
+            .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
+            .andReturn();
+  }
+
+
+  @Test
+  public void testGetHistoricalPricesRequiresRange() throws Exception {
+
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalPrices?symbol=IBM")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().is(400))
+            .andReturn();
+  }
+
+
+  @Test
+  public void testGetHistoricalPricesRequiresSymbol() throws Exception {
+
+    MvcResult result = this.mvc.perform(
+                    org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+                            .get("/iex/historicalPrices")
+                            .accept(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().is(400))
+            .andReturn();
+  }
+
+
 }
