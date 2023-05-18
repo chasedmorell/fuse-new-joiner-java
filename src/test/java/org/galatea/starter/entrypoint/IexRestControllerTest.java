@@ -89,7 +89,7 @@ public class IexRestControllerTest extends ASpringTest {
 
     MvcResult result = this.mvc.perform(
                     org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                            .get("/iex/historicalPrices?symbol=IBM&range=3")
+                            .get("/iex/historicalPrices?symbol=IBM&range=3d")
                             .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].symbol", is("IBM")))
@@ -104,7 +104,7 @@ public class IexRestControllerTest extends ASpringTest {
 
     MvcResult result = this.mvc.perform(
                     org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-                            .get("/iex/historicalPrices?symbol=IBM&range=5")
+                            .get("/iex/historicalPrices?symbol=IBM&range=5d")
                             .accept(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             //should return between 2 and 5 days (inclusive) of historical price data depending.

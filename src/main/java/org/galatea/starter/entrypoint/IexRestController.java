@@ -60,7 +60,7 @@ public class IexRestController {
   @GetMapping(value = "${mvc.iex.getHistoricalPricesPath}", produces = {
           MediaType.APPLICATION_JSON_VALUE})
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(
-          @RequestParam(value = "symbol") final String symbol, @RequestParam(value="range") final Integer range) {
+          @RequestParam(value = "symbol") final String symbol, @RequestParam(value="range") final String range) {
     return iexService.getHistoricalPricesForSymbol(symbol, range);
   }
 

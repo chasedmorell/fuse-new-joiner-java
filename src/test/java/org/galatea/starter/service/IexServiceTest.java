@@ -13,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.base.Verify.verify;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,15 +41,15 @@ public class IexServiceTest extends ASpringTest {
     public void testGetHistoricalPricesForSymbol(){
 
         Mockito.verify(mockIexClient, times(0)).getHistoricalPricesForSymbol("IBM","2d");
-        service.getHistoricalPricesForSymbol("IBM", 2);
+        service.getHistoricalPricesForSymbol("IBM", "2d");
         Mockito.verify(mockIexClient, times(1)).getHistoricalPricesForSymbol("IBM","2d");
 
-        List<IexHistoricalPrices> prices = new ArrayList<>();
-        prices.add(new IexHistoricalPrices());
-        prices.add(new IexHistoricalPrices());
-        Mockito.when(mockIexHistoricalPricesRpsy.findAllById(any())).thenReturn(prices);
+        IexHistoricalPrices price = new IexHistoricalPrices(new IexHistoricalPricesKey("IBM",new Date()));
+        price.setClose(BigDecimal.valueOf(1.00));
 
-        service.getHistoricalPricesForSymbol("IBM", 2);
+        Mockito.when(mockIexHistoricalPricesRpsy.findById(any())).thenReturn(Optional.of(price));
+
+        service.getHistoricalPricesForSymbol("IBM", "2d");
 
         //IexClient.getHistoricalPricesForSymbol() should only be invoked 1 time.
         //When getting prices the second time, the service should use cached data,

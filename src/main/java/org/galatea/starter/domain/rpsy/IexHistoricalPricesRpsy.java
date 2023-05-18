@@ -4,6 +4,7 @@ import org.galatea.starter.domain.IexHistoricalPrices;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IexHistoricalPricesRpsy extends CrudRepository<IexHistoricalPrices, IexHistoricalPricesKey> {
 
@@ -15,10 +16,10 @@ public interface IexHistoricalPricesRpsy extends CrudRepository<IexHistoricalPri
   @Override
   List<IexHistoricalPrices> findAllById(Iterable<IexHistoricalPricesKey> ids);
 
-  /**
-   * 'p0' required in key because java does not retain parameter names during compilation unless
-   * specified. You must use position parameter bindings otherwise.
-   */
+  @Override
+  Optional<IexHistoricalPrices> findById(IexHistoricalPricesKey id);
+
+
   @Override
   <S extends IexHistoricalPrices> S save(S entity);
 

@@ -67,10 +67,10 @@ public class HelpersTest {
   }
 
   @Test
-  public void testGetBusinessDaysSinceDate(){
+  public void testGetDaysSinceDate(){
     LocalDate endDate = LocalDate.of(2023,5,17);
     LocalDate startDate = endDate.minusDays(5);
-    List<Date> businessDaysSinceDate = Helpers.getBusinessDaysSinceDate(endDate,startDate);
-    assertEquals(businessDaysSinceDate.size(),3);
+    List<Date> businessDaysSinceDate = Helpers.getDaysSinceDate(endDate,startDate);
+    assertEquals(businessDaysSinceDate.size(),5);
   }
 }

@@ -53,25 +53,21 @@ public class Helpers {
     return builder.build();
   }
 
-  public static List<Date> getBusinessDaysSinceDate(final LocalDate endDate, final LocalDate startDate) {
+  public static List<Date> getDaysSinceDate(final LocalDate endDate, final LocalDate startDate) {
 
-    // Predicate 2: Is a given date is a weekday
-    Predicate<LocalDate> isWeekend = date -> date.getDayOfWeek() == DayOfWeek.SATURDAY
-            || date.getDayOfWeek() == DayOfWeek.SUNDAY;
 
-    // Iterate over stream of all dates and check each day against any weekday or holiday
-    List<LocalDate> businessDays = startDate.datesUntil(endDate)
-            .filter(isWeekend.negate())
+    // Iterate over stream of all dates
+    List<LocalDate> days = startDate.datesUntil(endDate)
             .collect(Collectors.toList());
 
-    List<Date> businessDaysDate = new ArrayList<Date>();
+    List<Date> DaysDate = new ArrayList<Date>();
 
-    for (int i = 0; i < businessDays.size(); i++) {
-      Date date = Date.from(businessDays.get(i).atStartOfDay(ZoneId.of("Etc/UTC")).toInstant());
-      System.out.println(businessDays.get(i));
-      businessDaysDate.add(date);
+    for (int i = 0; i < days.size(); i++) {
+      Date date = Date.from(days.get(i).atStartOfDay(ZoneId.of("Etc/UTC")).toInstant());
+      DaysDate.add(date);
     }
 
-    return businessDaysDate;
+    return DaysDate;
   }
+
 }
