@@ -1,6 +1,5 @@
 package org.galatea.starter.service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -10,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.galatea.starter.domain.IexHistoricalPrices;
 import org.galatea.starter.domain.IexLastTradedPrice;
 import org.galatea.starter.domain.IexSymbol;
+import org.galatea.starter.domain.RangeType;
 import org.galatea.starter.domain.rpsy.IexHistoricalPricesKey;
 import org.galatea.starter.domain.rpsy.IexHistoricalPricesRpsy;
 import org.galatea.starter.utils.Helpers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -65,25 +64,8 @@ public class IexService {
    */
   public List<IexHistoricalPrices> getHistoricalPricesForSymbol(final String symbol, final String range) {
 
-      LocalDate sinceDate;
-      Integer rangeValue = Integer.parseInt(range.replaceAll("[^0-9]",""));
-
-      switch(range.charAt(range.length()-1)){
-          case 'd': sinceDate = LocalDate.now().minusDays(rangeValue); break;
-          case 'm': sinceDate = LocalDate.now().minusMonths(rangeValue); break;
-          case 'y': sinceDate = LocalDate.now().minusYears(rangeValue); break;
-          case 'q': sinceDate = LocalDate.now().minusMonths(rangeValue*3); break;
-          default: return new ArrayList<IexHistoricalPrices>();
-      }
-
-      //determine the days of historicalPrice data needed based on range query
-      List<Date> daysSinceDate = Helpers.getDaysSinceDate(LocalDate.now(), sinceDate);
-
       //create a list of primary keys, which will be used in cache query.
-      List<IexHistoricalPricesKey> keys = new ArrayList<>();
-      for(Date date : daysSinceDate){
-          keys.add(new IexHistoricalPricesKey(symbol, date));
-      }
+      List<IexHistoricalPricesKey> keys = IexHistoricalPricesKey.keysForRange(symbol, range);
 
       //find all the historicalPrice records, if they exist, in cache database.
       //when a record isn't found in cache, immediately stop querying cache.
@@ -92,10 +74,10 @@ public class IexService {
 
       for(IexHistoricalPricesKey key: keys){
           Optional<IexHistoricalPrices> price = iexHistoricalPricesRpsy.findById(key);
-          //Price records for days that market is closed (weekends, etc) have null values.
+          //Price records for days that market is closed (weekends, etc) have null close values.
           //Don't include these in the response.
           if(price.isPresent()){
-              if((price.get().getClose().isPresent())){
+              if(price.get().getClose().isPresent()){
                   cachedHistoricalPrices.add(price.get());
               }
           }else{
