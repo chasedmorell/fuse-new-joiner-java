@@ -99,7 +99,6 @@ public class IexService {
                   cachedHistoricalPrices.add(price.get());
               }
           }else{
-              System.out.println("PRICE NOT FOUND");
               allDatesFoundInCache = false;
               break;
           }
