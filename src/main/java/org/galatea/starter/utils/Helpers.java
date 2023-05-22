@@ -4,11 +4,24 @@ import static org.springframework.util.ReflectionUtils.doWithMethods;
 import static org.springframework.util.ReflectionUtils.invokeMethod;
 
 import java.lang.reflect.Modifier;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.builder.DiffBuilder;
 import org.apache.commons.lang3.builder.DiffResult;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.galatea.starter.domain.RangeType;
+import org.galatea.starter.domain.rpsy.IexHistoricalPricesKey;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 
 
@@ -41,4 +54,20 @@ public class Helpers {
 
     return builder.build();
   }
+
+  public static List<Date> getDaysSinceDate(final LocalDate endDate, final LocalDate startDate) {
+    // Iterate over stream of all dates
+    List<LocalDate> days = startDate.datesUntil(endDate)
+            .collect(Collectors.toList());
+
+    List<Date> daysDate = new ArrayList<Date>();
+
+    for (int i = 0; i < days.size(); i++) {
+      Date date = Date.from(days.get(i).atStartOfDay(ZoneId.of("Etc/UTC")).toInstant());
+      daysDate.add(date);
+    }
+
+    return daysDate;
+  }
+
 }

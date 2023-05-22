@@ -9,6 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.builder.DiffResult;
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Slf4j
 @ToString
@@ -60,5 +64,13 @@ public class HelpersTest {
     String lhs = "hi";
     SimpleObject rhs = new SimpleObject();
     Helpers.diff(lhs, rhs);
+  }
+
+  @Test
+  public void testGetDaysSinceDate(){
+    LocalDate endDate = LocalDate.of(2023,5,17);
+    LocalDate startDate = endDate.minusDays(5);
+    List<Date> businessDaysSinceDate = Helpers.getDaysSinceDate(endDate,startDate);
+    assertEquals(businessDaysSinceDate.size(),5);
   }
 }
