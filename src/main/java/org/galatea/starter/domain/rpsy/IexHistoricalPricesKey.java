@@ -31,12 +31,13 @@ public class IexHistoricalPricesKey implements Serializable {
         LocalDate sinceDate;
         Integer rangeValue = Integer.parseInt(range.replaceAll("[^0-9]",""));
 
-        Optional<RangeType> type = RangeType.fromString(String.valueOf(range.charAt(range.length()-1)));
+        String type = String.valueOf(range.charAt(range.length()-1));
+        Optional<RangeType> rangeType = RangeType.fromString(type);
 
-        if(type.isPresent()){
-            sinceDate = type.get().subtract(rangeValue);
+        if(rangeType.isPresent()){
+            sinceDate = rangeType.get().subtract.apply(rangeValue);
         }else{
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("Invalid range type specified: %s", type));
         }
 
         //determine the days of historicalPrice data needed based on range query
